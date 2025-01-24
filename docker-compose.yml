@@ -1,0 +1,25 @@
+services:
+  # metric-tracking-api:
+  #   container_name: metric-tracking-api
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 8002:8002
+  #   build:
+  #     context: .
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   depends_on:
+  #     - metric-tracking-db
+  metric-tracking-db:
+    image: postgres:15
+    container_name: metric-tracking-db
+    restart: always
+    ports:
+      - 5472:5432
+    env_file:
+      - .env
+    volumes:
+      - ./db:/var/lib/postgresql/data

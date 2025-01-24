@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MetricType {
+  Distance
+  Temperature
+}
+
+model Metric {
+  id             Int              @id @default(autoincrement())
+  symbol         String           @db.VarChar(20)
+  displayName    String           @db.VarChar(200)
+  type           MetricType
+  conversionRate Float            @db.DoublePrecision() // If the type is 'Distance', set the default conversion rate to 'm'; if it is 'Temperature', set it to '°C'.
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  metricTracking MetricTracking[]
+
+  @@unique([symbol, type])
+}
+
+model MetricTracking {
+  id           Int            @id @default(autoincrement())
+  value        Float          @db.DoublePrecision()
+  metricId     Int
+  metric       Metric         @relation(fields: [metricId], references: [id])
+  trackedAt    DateTime
+  userId       Int
+  metricReport MetricReport[]
+
+  @@index([userId])
+}
+
+model MetricReport {
+  id               Int            @id @default(autoincrement())
+  reportedDate     String         @db.VarChar(10)
+  type             MetricType
+  metricTrackingId Int
+  metricTracking   MetricTracking @relation(fields: [metricTrackingId], references: [id])
+  userId           Int
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([userId, reportedDate, type])
+  @@index([userId, type])
+}
