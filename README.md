@@ -73,3 +73,4 @@ curl -X 'POST' \
 - MetricModule: Responsible for managing metrics (units).
 - MetricTrackingModule: Responsible for saving and retrieving metric tracking records.
 - MetricReportModule: Responsible for generating charts and reports based on daily data.
+- Prisma folder: Responsible for db entities, migrations and seed function.
